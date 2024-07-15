@@ -11,7 +11,7 @@ app.use(express.json())
 app.get('/', (req, res) => {
     try {
         const today = new Date().toISOString().replace(/:/g, '-')
-        const filePath = path.join('TimeStamp', `${today}.txt`);
+        const filePath = path.join('File_system', `${today}.txt`);
 
         fs.writeFileSync(filePath, today, 'utf8');
         const data = fs.readFileSync(filePath, 'utf8');
@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/getTextFiles', (req, res) => {
-    const folderPath = 'TimeStamp';
+    const folderPath = 'File_system';
 
     fs.readdir(folderPath, (err, files) => {
         if (err) {
