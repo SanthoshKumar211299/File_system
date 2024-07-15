@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/getTextFiles', (req, res) => {
-    const folderPath = 'TimeStamp';
+    const folderPath = 'C:\Users\subja\OneDrive\Documents\Daily Task\Module-5\File_system\TimeStamp';
 
     fs.readdir(folderPath, (err, files) => {
         if (err) {
