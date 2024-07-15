@@ -20,14 +20,14 @@ console.log(newFileTitle);
 
 // first question solution
 
-fs.writeFile(`./newfiles/${newFileTitle}.txt`, time, (err) => {
+fs.writeFile(`./File_system/${newFileTitle}.txt`, time, (err) => {
     if(err) console.log(err);
     console.log("File created.");
 });
 
 // second question answer
 
-fs.readdir('./newfiles', (err, files) => {
+fs.readdir('./File_system', (err, files) => {
     if(err) console.log(err);
     files.forEach((file) => {
         console.log(file);
