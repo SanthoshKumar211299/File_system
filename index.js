@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/getTextFiles', (req, res) => {
-    const folderPath = 'textFile';
+    const folderPath = 'TimeStamp';
 
     fs.readdir(folderPath, (err, files) => {
         if (err) {
