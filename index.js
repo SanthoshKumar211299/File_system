@@ -1,35 +1,37 @@
-import express from "express";
-import * as fs from "fs";
-import { type } from "os";
+import express from 'express'
+import fs from 'fs'
+import { format } from 'date-fns';
+import path from 'path';
 
-const app = express();
-
-const d = new Date();
-const time = d.toLocaleTimeString();
-const realTime = time.slice(0,5).split(':').join('_');
-console.log(realTime);
-
-const date = d.toLocaleDateString();
-const realDate = date.split('/').join('_');
-
-
-const fileTitle = realDate  + '-' + realTime + 'pm';
-const newFileTitle = fileTitle.split(' ').join('');
-console.log(newFileTitle);
-
-
-// first question solution
-
-fs.writeFile(`./File_system/${newFileTitle}.txt`, time, (err) => {
-    if(err) console.log(err);
-    console.log("File created.");
-});
-
-// second question answer
-
-fs.readdir('./File_system', (err, files) => {
-    if(err) console.log(err);
-    files.forEach((file) => {
-        console.log(file);
-    })
+const PORT=8002;
+let app=express()
+app.use(express.json())
+app.get('/',(req,res)=>{
+    let today=format(new Date(),'dd-MM-yyyy-HH-mm-ss')
+    const filePath = `File_system/${today}.txt`;
+    fs.writeFileSync(filePath,`${today}`,'utf8')
+    let data=fs.readFileSync(filePath,'utf8')
+    try {
+        res.status(200).send(data)
+        
+    } catch (error) {
+        req.res(500).send('Internel server error')
+        
+    }
 })
+//New endpoint to retrieve all text files in a folder
+app.get("/getTextFiles", (req, res) => {
+    const folderPath = "File_system";
+  
+    fs.readdir(folderPath, (err, files) => {
+      if (err) {
+        console.log(err);
+        res
+          .status(500)
+          .send("An error occured while listing the files from directory");
+      } else {
+        const textFiles = files.filter((file) => path.extname(file) === ".txt");
+        res.status(200).json(textFiles);
+      }
+    });
+  });
