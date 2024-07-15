@@ -11,20 +11,26 @@ app.use(express.json())
 app.get('/', (req, res) => {
     try {
         const today = new Date().toISOString().replace(/:/g, '-')
-        const filePath = path.join('File_system', `${today}.txt`);
+        const dirPath = path.join(__dirname,'File_system');
+        const filePath = path.join(dirPath, `${today}.txt`);
 
-        fs.writeFileSync(filePath, today, 'utf8');
-        const data = fs.readFileSync(filePath, 'utf8');
-        res.status(200).send(data);
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal server error');
+       // Ensure the directory exists
+       if (!fs.existsSync(dirPath)) {
+        fs.mkdirSync(dirPath);
     }
+
+    fs.writeFileSync(filePath, today, 'utf8');
+    const data = fs.readFileSync(filePath, 'utf8');
+    res.status(200).send(data);
+
+} catch (error) {
+    console.error(error);
+    res.status(500).send('Internal server error');
+}
 });
 
 app.get('/getTextFiles', (req, res) => {
-    const folderPath = 'File_system';
+    const folderPath = path.join(__dirname, 'File_system');
 
     fs.readdir(folderPath, (err, files) => {
         if (err) {
@@ -37,4 +43,4 @@ app.get('/getTextFiles', (req, res) => {
     });
 });
 
-app.listen(PORT, () => { console.log(`listening on port ${PORT}`) })
+app.listen(PORT, () => { console.log(`listening on port ${PORT}`) });
