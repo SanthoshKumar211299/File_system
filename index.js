@@ -1,52 +1,35 @@
+import express from "express";
+import * as fs from "fs";
+import { type } from "os";
 
-import express from 'express';
-import * as fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-
-const PORT = process.env.PORT || 8000;
 const app = express();
 
-app.use(express.json())
+const d = new Date();
+const time = d.toLocaleTimeString();
+const realTime = time.slice(0,5).split(':').join('_');
+console.log(realTime);
 
-// Convert import.meta.url to a path
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const date = d.toLocaleDateString();
+const realDate = date.split('/').join('_');
 
-app.get('/', (req, res) => {
-    try {
-        const today = new Date().toISOString().replace(/:/g, '-')
-        const dirPath = path.join(__dirname,'File_system');
-        const filePath = path.join(dirPath, `${today}.txt`);
 
-       // Ensure the directory exists
-       if (!fs.existsSync(dirPath)) {
-        fs.mkdirSync(dirPath);
-    }
+const fileTitle = realDate  + '-' + realTime + 'pm';
+const newFileTitle = fileTitle.split(' ').join('');
+console.log(newFileTitle);
 
-    fs.writeFileSync(filePath, today, 'utf8');
-    const data = fs.readFileSync(filePath, 'utf8');
-    res.status(200).send(data);
 
-} catch (error) {
-    console.error(error);
-    res.status(500).send('Internal server error');
-}
+// first question solution
+
+fs.writeFile(`./newfiles/${newFileTitle}.txt`, time, (err) => {
+    if(err) console.log(err);
+    console.log("File created.");
 });
 
-app.get('/getTextFiles', (req, res) => {
-    const folderPath = path.join(__dirname, 'File_system');
+// second question answer
 
-    fs.readdir(folderPath, (err, files) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send('An error occurred while listing the files from the directory');
-        } else {
-            const textFiles = files.filter((file) => path.extname(file) === '.txt');
-            res.status(200).json(textFiles);
-        }
-    });
-});
-
-app.listen(PORT, () => { console.log(`listening on port ${PORT}`) });
+fs.readdir('./newfiles', (err, files) => {
+    if(err) console.log(err);
+    files.forEach((file) => {
+        console.log(file);
+    })
+})
