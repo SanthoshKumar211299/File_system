@@ -2,11 +2,15 @@
 import express from 'express';
 import * as fs from 'fs';
 import path from 'path';
-
+import { fileURLToPath } from 'url';
 const PORT = process.env.PORT || 8000;
 const app = express();
 
 app.use(express.json())
+
+// Convert import.meta.url to a path
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.get('/', (req, res) => {
     try {
